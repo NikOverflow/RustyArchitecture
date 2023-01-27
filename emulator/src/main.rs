@@ -7,7 +7,7 @@ use std::io::Read;
 fn main() {
     println!("Starting RustyArchitecture Emulator.");
     let mut cpu: cpu::CPU = cpu::CPU::new();
-    let program: Vec<u64> = get_instructions_from_file(&String::from("first-program.bin"));
+    let program: Vec<u64> = get_instructions_from_file(&String::from("jmp.bin"));
     cpu.load(program);
     cpu.run();
 }

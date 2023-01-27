@@ -1,2 +1,0 @@
-Starting RustyArchitecture Emulator.
-Instructions: [129, 0, 21, 1, 64, 0, 144, 0, 21, 1, 64, 0]

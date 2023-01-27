@@ -101,23 +101,23 @@ impl CPU {
         self.program_counter += 3;
     }*/
     pub fn execute_instruction(&mut self) {
-        let opcode: u64 = self.memory_read(self.program_counter);
-        let argument_1: u64 = self.memory_read(self.program_counter + 1);
-        let argument_2: u64 = self.memory_read(self.program_counter + 2);
+        let opcode: u64 = self.read_memory(self.program_counter);
+        let argument_1: u64 = self.read_memory(self.program_counter + 1);
+        let argument_2: u64 = self.read_memory(self.program_counter + 2);
         self.execute_opcode(opcode, argument_1, argument_2);
-        self.program_counter += 3;
+        self.program_counter = self.program_counter.wrapping_add(3);
     }
 }
 
 pub trait Memory {
-    fn memory_read(&self, address: u64) -> u64;
-    fn memory_write(&mut self, address: u64, data: u64);
+    fn read_memory(&self, address: u64) -> u64;
+    fn write_memory(&mut self, address: u64, data: u64);
 }
 impl Memory for CPU {
-    fn memory_read(&self, address: u64) -> u64 {
+    fn read_memory(&self, address: u64) -> u64 {
         return self.memory[address as usize];
     }
-    fn memory_write(&mut self, address: u64, data: u64) {
+    fn write_memory(&mut self, address: u64, data: u64) {
         self.memory[address as usize] = data;
     }
 }

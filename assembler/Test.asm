@@ -33,11 +33,18 @@
 ;mov %reg1, 42
 ;mov %reg1, %reg2
 ;hlt
-mov %reg1, 0xDEADBEEF
-nop
-mov %reg2, %reg1
-nop
-mov %reg3, %reg2
-nop
-mov %reg1, %reg4
-hlt
+
+start:
+    mov %reg1, 0xDEADBEEF
+    jmp middle
+middle:
+    mov %reg1, 0
+    jmp start
+
+;nop
+;mov %reg2, %reg1
+;nop
+;mov %reg3, %reg2
+;nop
+;mov %reg1, %reg4
+;hlt

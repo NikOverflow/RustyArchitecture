@@ -43,6 +43,9 @@ pub fn initialize() -> HashMap<u64, Opcode> {
             cpu.write_register(argument_1, argument_2);
             cpu.update_flags(cpu.read_register(argument_1), argument_2);
         })),
+        Opcode::new(0x3, 0x0, "JMP", RefCell::new(move |cpu, argument_1, argument_2| {
+            cpu.program_counter = cpu.program_counter.wrapping_add(argument_1 - 3);
+        })),
     ];
     let mut map: HashMap<u64, Opcode> = HashMap::new();
     for opcode in opcodes {
