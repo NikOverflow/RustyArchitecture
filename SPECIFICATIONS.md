@@ -12,7 +12,8 @@ Opcode Types:
 - 0x0 -> Nothing
 - 0x1 -> Register, Register
 - 0x2 -> Register, Immediate
-- 0x3 -> Conditional Jump
+- 0x3 -> Immediate, Immediate
+- 0x4 -> Conditional Jump
 
 Opcodes:
 - 0x0 -> HLT (0x0)
