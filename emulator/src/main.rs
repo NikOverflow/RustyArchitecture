@@ -1,5 +1,7 @@
 pub mod cpu;
 pub mod opcodes;
+#[cfg(test)]
+pub mod tests;
 
 use std::fs;
 use std::io::Read;

@@ -4,6 +4,14 @@ use crate::cpu::{self, Register};
 
 use std::{collections::HashMap, cell::{RefCell}, process::exit};
 
+
+pub const HLT: u64 = get_u64_opcode(0x0, 0x0);
+pub const NOP: u64 = get_u64_opcode(0x0, 0xFFFFFFFF);
+
+pub const MOV: u64 = get_u64_opcode(0x1, 0x1);
+pub const MOVI: u64 = get_u64_opcode(0x2, 0x1);
+
+
 #[derive(Clone)]
 pub struct Opcode {
     pub opcode_type: u32,
@@ -35,14 +43,16 @@ pub fn initialize() -> HashMap<u64, Opcode> {
             exit(0);
         })),
         Opcode::new(0x0, 0xFFFFFFFF, "NOP", RefCell::new(move |cpu, argument_1, argument_2| {})),
+
         Opcode::new(0x1, 0x1, "MOV", RefCell::new(move |cpu, argument_1, argument_2| {
             cpu.write_register(argument_1, cpu.read_register(argument_2));
             cpu.update_flags(cpu.read_register(argument_1), cpu.read_register(argument_2));
         })),
-        Opcode::new(0x2, 0x1, "MOV", RefCell::new(move |cpu, argument_1, argument_2| {
+        Opcode::new(0x2, 0x1, "MOVI", RefCell::new(move |cpu, argument_1, argument_2| {
             cpu.write_register(argument_1, argument_2);
             cpu.update_flags(cpu.read_register(argument_1), argument_2);
         })),
+        
         Opcode::new(0x3, 0x0, "JMP", RefCell::new(move |cpu, argument_1, argument_2| {
             cpu.program_counter = cpu.program_counter.wrapping_add(argument_1 - 3);
         })),
@@ -59,4 +69,7 @@ pub fn initialize() -> HashMap<u64, Opcode> {
 }
 pub fn get_opcode<'a>(instruction_set: &'a HashMap<u64, Opcode>, opcode: u64) -> Option<&'a Opcode> {
     return instruction_set.get(&opcode);
+}
+pub const fn get_u64_opcode(opcode_type: u32, opcode: u32) -> u64 {
+    return ((opcode_type as u64) << 32) | (opcode as u64);
 }
