@@ -13,3 +13,4 @@ cargo build --release
 ## Crates
 > - [bitflags](https://crates.io/crates/bitflags)
 > - [colored](https://crates.io/crates/colored)
+> - [clap](https://crates.io/crates/clap)

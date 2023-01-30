@@ -7,7 +7,7 @@ use bitflags::bitflags;
 bitflags! {
     pub struct Flags: u8 {
         const ZERO     = 0b00000001;
-        const NEGATIVE = 0b00000010;
+        const SIGN = 0b00000010;
         const CARRY    = 0b00000100;
         const OVERFLOW = 0b00001000;
     }
@@ -19,10 +19,11 @@ pub struct CPU {
     pub program_counter: u64,
     memory: [u64; 131072],
     instruction_set: HashMap<u64, opcodes::Opcode>,
+    verbose: bool,
 }
 
 impl CPU {
-    pub fn new() -> Self {
+    pub fn new(verbose: bool) -> Self {
         println!("Initialize Cpu...");
         let instruction_set: HashMap<u64, opcodes::Opcode> = opcodes::initialize();
         //self.bus = bus::initialize();
@@ -33,6 +34,7 @@ impl CPU {
             flags: Flags::empty(),
             memory: [0; 131072],
             instruction_set: instruction_set,
+            verbose: verbose,
         }
     }
     pub fn load(&mut self, program: Vec<u64>) {
@@ -60,9 +62,9 @@ impl CPU {
         self.program_counter = 0;
     }
 
-    pub fn update_flags(&mut self, old_value: u64, new_value: u64) {
-        self.flags.set(Flags::ZERO, new_value == 0);
-        self.flags.set(Flags::NEGATIVE, new_value >> 63 == 1);
+    pub fn update_common_flags(&mut self, value: u64) {
+        self.flags.set(Flags::ZERO, value == 0);
+        self.flags.set(Flags::SIGN, value >> 63 == 1);
         //TODO: Add Carry Flag check.
         //TODO; Add Overflow Flag check.
     }
@@ -76,7 +78,16 @@ impl CPU {
                 let opcode_type = cloned_opcode.opcode_type;
                 let opcode = cloned_opcode.opcode;
                 cloned_opcode.execute(self, argument_1, argument_2);
-                println!("{} (0x{}, 0x{}) executed.", mnemonic, opcode_type, opcode);
+                if self.verbose {
+                    print!("{} [({:#04x}, {:#04x}), ({}", mnemonic, opcode_type, opcode, mnemonic.to_lowercase());
+                    if opcode_type == 0x0 {
+                        println!(")] exeuted.");
+                    } else if opcode_type == 0x1 || opcode_type == 0x4 {
+                        println!(" {})] executed.", argument_1);
+                    } else {
+                        println!(" {}, {})] executed.", argument_1, argument_2);
+                    }
+                }
             },
             None => {
                 println!("Instruction ({}) does not exist!", opcode);

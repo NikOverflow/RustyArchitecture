@@ -17,34 +17,21 @@
 ; nand <Destination Register>, <Integer/Register>
 ; nor <Destination Register>, <Integer/Register>
 
-;mov %reg1, 2
-;add %reg1, 40
-;hlt
-
-; My First Program that should work:
-;mov %reg1, 21
-;mov %io, %reg1
-;add %reg1, 21
-;mov %io, %reg1
 
 
 
-;nop
-;mov %reg1, 42
-;mov %reg1, %reg2
-;hlt
+;start:
+    ;mov %reg1, 0xDEADBEEF
+    ;jmp middle
+;middle:
+    ;mov %reg1, 0
+    ;jmp start
 
+mov %reg1, 0
 start:
-    mov %reg1, 0xDEADBEEF
-    jmp middle
-middle:
-    mov %reg1, 0
-    jmp start
-
-;nop
-;mov %reg2, %reg1
-;nop
-;mov %reg3, %reg2
-;nop
-;mov %reg1, %reg4
-;hlt
+    add %reg1, 1
+    cmp %reg1, 5
+    je end
+    jne start
+end:
+    hlt

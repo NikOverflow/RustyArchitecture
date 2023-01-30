@@ -5,11 +5,25 @@ pub mod tests;
 
 use std::fs;
 use std::io::Read;
+use clap::Parser;
+
+#[derive(Parser)]
+struct Args {
+    /// Shows Debug information.
+    #[arg(short, long, default_value_t = false)]
+    verbose: bool,
+
+    /// Binary File.
+    #[arg(short, long)]
+    file: String
+}
 
 fn main() {
+    //let args: Args = Args::parse();
+    //println!("{}", args.file);
     println!("Starting RustyArchitecture Emulator.");
-    let mut cpu: cpu::CPU = cpu::CPU::new();
-    let program: Vec<u64> = get_instructions_from_file(&String::from("jmp.bin"));
+    let mut cpu: cpu::CPU = cpu::CPU::new(true);
+    let program: Vec<u64> = get_instructions_from_file(&String::from("add5.bin"));
     cpu.load(program);
     cpu.run();
 }
