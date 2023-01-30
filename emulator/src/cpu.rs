@@ -1,6 +1,8 @@
 use crate::opcodes;
 
 use std::{collections::HashMap, process::exit};
+use std::fs;
+use std::io::Read;
 
 use bitflags::bitflags;
 
@@ -43,13 +45,34 @@ impl CPU {
         println!("Program loaded.");
         println!("Instructions: {:?}", program);
     }
+    pub fn load_from_file(&mut self, filename: &str) {
+        let mut instructions: Vec<u64> = vec![];
+        let mut file = fs::File::open(&filename).expect("no file found");
+        let metadata = fs::metadata(&filename).expect("unable to read metadata");
+        let mut buffer: Vec<u8> = vec![0; metadata.len() as usize];
+        file.read(&mut buffer).expect("buffer overflow");
+        let mut instruction: u64 = 0;
+        let mut counter: u8 = 0;
+        for i in buffer.iter() {
+            let integer: u64 = *i as u64;
+            instruction = (instruction << 8) | integer;
+            if counter == 7 {
+                instructions.push(instruction);
+                instruction = 0;
+                counter = 0;
+            } else { 
+                counter += 1;
+            }
+        }
+        self.load(instructions)
+    }
     /*pub fn run<F>(&mut self, mut callback: F) where F: FnMut(&mut CPU) {
         callback(self);
     }*/
     pub fn run(&mut self) {
         loop {
             self.execute_instruction();
-            println!("All Registers: {:?}", self.registers);
+            //println!("All Registers: {:?}", self.registers);
             ::std::thread::sleep(std::time::Duration::new(0, 70_000));
             //::std::thread::sleep(std::time::Duration::new(0, 90000_000));
         }
